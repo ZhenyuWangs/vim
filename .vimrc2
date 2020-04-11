@@ -1,0 +1,713 @@
+"vim7.2原本的安装文件后显示的vimrc配置文件
+set nocompatible
+source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/mswin.vim
+behave mswin
+
+"把下面的vim自身的mydiff函数注释掉,对于vim7.4就可以正常使用,不知道为什么!
+"set diffexpr=MyDiff() 
+"function MyDiff()
+"  let opt = '-a --binary '
+"  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+"  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+"  let arg1 = v:fname_in
+"  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+"  let arg2 = v:fname_new
+"  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+"  let arg3 = v:fname_out
+"  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+"  let eq = ''
+"  if $VIMRUNTIME =~ ' '
+"    if &sh =~ '\<cmd'
+"      let cmd = '""' . $VIMRUNTIME . '\diff"'
+"      let eq = '"'
+"    else
+"      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+"    endif
+"  else
+"    let cmd = $VIMRUNTIME . '\diff'
+"  endif
+"  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
+"endfunction 
+
+
+
+"本人添加的vimrc配置文件""""""""""""""""""""""""""""""""""""""""""""
+"自动读入一些插件的帮助文件,这样就不需要自己重新弄了,这样会简单一些
+:helptags C:\Program Files (x86)\Vim\vimfiles\doc
+
+"语法高亮用来显示if后面是=号,而不是==或者-=之类的
+:highlight MyGroup ctermbg=green guibg=red
+" ! = + - * / ^ > <
+":match MyGroup /if.*\(!\|=\|+\|-\|\*\|\/\|\^\|>\|<\)\@<!=[^=]/
+
+noremap <F6> <ESC>:call MyTempFun()<CR>
+function! MyTempFun()
+    :%s/\/\|，/\t/ge
+    :%y
+endfunction
+
+
+
+"针对autocad http://vim.wikia.com/wiki/Integrate_gvim_with_AutoCad_MTEXT
+"autocmd BufRead,BufNewFile *.tmp source C:\Program Files\Vim\aacad.vim
+
+
+""安装中文帮助文件时,菜单出现乱码,以下代码用来解决这个问题
+"set encoding=utf-8
+"set langmenu=zh_CN.UTF-8
+"language message zh_CN.UTF-8
+"source $VIMRUNTIME/delmenu.vim
+"source $VIMRUNTIME/menu.vim
+""把菜单和提示信息设置成英文的,vim7.3当菜单是中文时,不能够把菜单撕下来
+""所以只好把菜单和提示信息换成英文的,这样就可以把菜单撕下来.
+""因此把上面的四行暂时注释掉,采用下面的五行
+"set langmenu=en_US.UTF-8
+"let $LANG='en_US.UTF-8'
+"language message en_US.UTF-8
+"source $VIMRUNTIME/delmenu.vim
+"source $VIMRUNTIME/menu.vim
+
+"安装中文帮助文件时,菜单出现乱码,以下代码用来解决这个问题
+set encoding=cp936
+set langmenu=zh_CN.cp936
+language message zh_CN.cp936
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+"把菜单和提示信息设置成英文的,vim7.3当菜单是中文时,不能够把菜单撕下来
+"所以只好把菜单和提示信息换成英文的,这样就可以把菜单撕下来.
+"因此把上面的四行暂时注释掉,采用下面的五行
+set langmenu=en_US.cp936
+let $LANG='en_US.cp936'
+language message en_US.cp936
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
+"自定义菜单,针对华宁17.5软件的,20191128_104427,放在source $VIMRUNTIME/delmenu.vim这句话下面,否则有问题
+"英文逗号变tab,并且复制所有
+:menu 257.331 自定义.英文逗号=>Tab<Tab>   :%s/,/\t/ge<CR><Bar>:%y<CR>
+"tab变英文逗号,并且保存数据,这样就不用鼠标点击保存了
+:menu 257.332 自定义.Tab=>英文逗号<Tab>   :%s/\t/,/ge<CR><Bar>:w<CR>
+:menu 257.333 自定义.UTF-8编码<Tab>   :set enc=utf-8<CR>
+:menu 257.334 自定义.CP936编码<Tab>   :set enc=cp936<CR>
+"  an 257.331 自定义.英文逗号=>Tab<Tab>   :%s/,/\t/ge<CR><Bar>:%y<CR>
+"  an 257.332 自定义.Tab=>英文逗号<Tab>   :%s/\t/,/ge<CR>
+
+
+"字符设置,和中文显示有关
+"windows系统用的编码似乎是cp936,对于matlab的代码,如果使用utf8编码的话,
+"在warning函数中的函数,以及目录中的汉字,容易产生乱码,所以使用cp936编码
+"let b:extfname=expand("%:e") "取得文件的后缀名
+"if b:extfname==?"m" 
+"    set fileencoding=cp936
+"else
+"    set fileencoding=utf-8
+"end
+
+"set fileencodings=utf-8,usc-bom,euc-jp,gb18030,gbk,gb2312,cp936,chinese,big5,latin1
+"把所有的“不明宽度”字符 [9]—指的是在 Unicode 字符集中某些同时
+"在东西方语言中使用的字符，如省略号、破折号、书名号和全角引号
+"，在西方文字中通常字符宽度等同于普通 ASCII 字符，而在东方文字中
+"通常字符宽度等同于两倍的普通 ASCII 字符，因而其宽度“不明”——
+"的宽度置为双倍字符宽度（中文字符宽度）。此数值只在 encoding 设为
+"utf-8 或某一 Unicode 编码时才有效
+set ambiwidth=double  
+
+
+set tabstop=4    "按tab键所产生的空格数
+set shiftwidth=4 "当使用shift键时所产生的空格,比如shift+>>时所产生的空格
+set expandtab    "把tab键盘产生的大空格转变为空格键产生的小空格
+:retab           "把过去的所有的tab键产生的空格都转化成为空格键产生的小空格
+"http://tedlogan.com/techblog3.html
+"Tabs are eight columns wide. Each indentation level is three columns, which may be spaces or tabs
+":set tabstop=8 softtabstop=3 shiftwidth=3 noexpandtab
+set softtabstop=4 "编辑时,tab键的空格数,参见help
+"下面两行显示颜色的好像没什么作用
+"syntax match Tab /\t/
+"hi Tab gui=underline guifg=blue ctermbg=blue  "显示出Tab键的颜色,也许需要调整
+
+
+"indent: 如果用了:set indent,:set ai 等自动缩进，想用退格键将字段缩进的删掉，必须设置这个选项。否则不响应。
+"eol:如果插入模式下在行开头，想通过退格键合并两行，需要设置eol。
+"start：要想删除此次插入前的输入，需设置这个
+set backspace=indent,eol,start "make backspace a more flexible
+set nocompatible  "与vi模式不兼容
+
+"当使用yy命令时,可以被复制到windows剪贴板,不然的话复制不过去
+set clipboard+=unnamed "share windows clipboard
+set wildmenu "打开命令行按tab键补全的选项(多个),参见:help wildmenu
+"set cursorcolumn "高亮当前鼠标所在的列
+set cursorline   "高亮当前鼠标所在的行
+"仅仅在当前窗口高亮鼠标所在的列和行,参见:help cursorcolumn
+"au WinLeave * set nocursorcolumn
+"au WinEnter * set cursorcolumn
+
+" we do what to show tabs, to ensure we get them out of my files
+"显示行尾的回车键,以$表示,显示出打印不出来的字符,如行尾空格
+"set list 
+set lazyredraw " do not redraw while running macros
+set showcmd " show the command being typed
+
+
+
+set history=2000 "记录的历史行数
+syntax enable
+syntax on       "语法高亮
+set ruler       "在编辑过程中,在右下角显示光标位置的状态行
+"下面两行在进行编写代码时,在格式对起上很有用；
+"第一行,vim使用自动对起,也就是把当前行的对起格式应用到下一行；
+"第二行,依据上面的对起格式,智能的选择对起方式,对于类似C语言编
+"写上很有用
+set autoindent
+set smartindent
+set showmatch  "高亮显示匹配的括号
+set guioptions+=b "显示下方的横向滚动条
+set mouse=a  "use mouse everywhere
+set showcmd " show the command being typed
+
+"参见 :help filetype
+filetype on
+filetype plugin on
+filetype indent on
+filetype plugin indent on
+"ab ABCDW <Space>ABCDW
+
+"窗口最大化设置(如果不想打开vim后就自动最大化,把这行删去)
+autocmd GUIEnter  * simalt ~x
+"自动保存,并且只保存有修改的文件,如果有错误,则不提示
+autocmd FocusLost * silent! :update 
+
+"修改vimrc文件后,不用重启vim就可以生效
+"Source the vimrc file after saving it
+"if has("autocmd")
+  "autocmd! BufWritePost ~/_vimrc source $MYVIMRC
+"endif
+
+"生成视图,用于保护代码折叠等
+autocmd BufWinLeave * silent mkview    
+"载入视图,用于读取代码折叠等
+autocmd BufWinEnter * silent loadview  
+"set noundofile
+set nobackup "不备份
+"set noswapfile
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"重启后撤销历史可用 persistent undo 
+"由于set noundofile不可以使用,所以只能用这办法
+set undofile
+set undodir=$VIMRUNTIME/\_undodir
+set undolevels=1000 "maximum number of changes that can be undone
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nowrap   "如果一行太长,那么不折断到多行去
+set foldcolumn=6 "代码折叠时,折叠栏的宽度
+set number "显示行号
+set incsearch "当输入的时候,跳到你搜索的关键字那去
+set hlsearch  "高亮被搜索的关键字
+"设置字体粗细大小
+"具体如何设置见:http://www.troubleshooters.com/linux/vifont.htm
+"set guifont=MS_Mincho:h12:b:cANSI
+"set guifont=Monospac821_BT:h11:b:cANSI
+"set guifont=Lucida_Console:h12:b:cANSI
+set guifont=Bitstream_Vera_Sans_Mono:h16:b:cANSI
+"set gfn?命令查看字体设置
+set guifont=Consolas:h18:b:cANSI
+"折叠方式是使用语法折叠
+:set foldmethod=syntax
+"不关闭大小写的
+set noignorecase
+
+set foldlevel=6 "折叠的层次是100,也就是打开所有的折叠
+
+
+
+"对不同的后缀名的文件启用不同的配置与映射
+"这样在不同的类型的后缀名的文件来回切换的时候,可以自动切换配置文件与映射
+"当然,后面的:autocmd需要调用这个定义的函数,这个自定义函数需要与autocmd配合使用
+function! MyDifferentTypeFun()
+"删除态下的映射,为下面的映射做准备,如果没silent!打开文件会提示错误导致下面的映射不能继续,从而破坏了函数MyDifferentTypeFun() 
+silent! unmap <F1>
+silent! unmap <F2>
+silent! unmap <F3>
+silent! unmap <F4>
+silent! unmap <F5>
+silent! unmap <F6>
+silent! unmap <F7>
+silent! unmap <F8>
+silent! unmap <F9>
+silent! unmap <F10>
+silent! unmap <F11>
+silent! unmap <F12>
+"删除插入状态下的映射,为下面的映射做准备 
+silent! iunmap <F1>
+silent! iunmap <F2>
+silent! iunmap <F3>
+silent! iunmap <F4>
+silent! iunmap <F5>
+silent! iunmap <F6>
+silent! iunmap <F7>
+silent! iunmap <F8>
+silent! iunmap <F9>
+silent! iunmap <F10>
+silent! iunmap <F11>
+silent! iunmap <F12>
+"删除正常状态下的映射,为下面的映射做准备 
+silent! nunmap <F1>
+silent! nunmap <F2>
+silent! nunmap <F3>
+silent! nunmap <F4>
+silent! nunmap <F5>
+silent! nunmap <F6>
+silent! nunmap <F7>
+silent! nunmap <F8>
+silent! nunmap <F9>
+silent! nunmap <F10>
+silent! nunmap <F11>
+silent! nunmap <F12>
+"千万不要把下面的多个if endif改成if elseif endif,否则会出现不能用的情况,具体为什么不知道,总之,程序能用则行,千万不要改！
+let b:extfname=expand("%:e") "取得文件的后缀名
+if(b:extfname==?"tcl")  "如果文件的后缀名是tcl
+     "启用标志折叠,这个针对的是tcl/tk语言
+     set foldmethod=marker "启用标志折叠
+     set foldmarker={,}    "把大括号之间的内容折叠起来
+endif
+"对于文本文件,当超过46个字符的时候,自动加回车换行
+"a表示当复制进入文本时自动排版,2表示段首可以加空格
+"在normal状态下使用gqG对光标处到结尾所有的文字重排,:h gq
+if (b:extfname==?"txt") "如果文件的后缀名是txt
+    "set textwidth=46  "到第46列后自动加回车符号换行
+    "set formatoptions+=a2Mm "主要针对汉字这种一个字符多个的,参加:h formatoptions :h fo-table
+    "全部选择然后复制
+    :nmap <F4> <ESC>:%y<CR>
+    "选择用txt写文本的时候的设置
+    :nmap <F5> <ESC>:set textwidth=60<BAR>set formatoptions+=a2Mm<CR><CR>
+    ""用于把连续的空白换成一个tab键,这样把就能直接把数据粘贴到excel了
+    "如果不把空格转化的话,那么就需要数据向导之类的,这样做很麻烦,所以直接换成tab键
+    "并且有错误不提示,主要是未找到模式.在这之前,还需要先删除行首和行尾的空格
+    :nmap <F6> <ESC>:%s/^\s\+//ge<BAR>%s/\s\+$//ge<BAR>%s/\s\+/\t/ge<BAR>norm ggyG<CR><CR>
+    "映射<F7>
+    ":imap <F7> <ESC>50a=<ESC>a
+    ":imap <F8> <ESC>50a-<ESC>a
+endif
+"对于lsp文件,采用标志折叠
+if (b:extfname==?"lsp") "如果文件的后缀名是lsp
+    :syntax on
+    set encoding=cp936
+    set ff=dos
+    set foldmethod=manual  "启用手工折叠
+    "set commentstring=;%s "把标志折叠的标志注释掉的符号,一般取该语言的注释符号
+    "set foldmarker={{{,}}} "创建折叠标志,这是系统默认的折叠标志,一般不用修改
+    colorscheme Tango         "\配色方案
+    set background=dark     "背景颜色
+    "对一对括号保存折叠!
+    :nmap <F9> zf%
+    "对于lisp代码,当输入(的时候,自动成()并且光标移动到中间
+    :inoremap ( ()<ESC>i
+    "全部选择然后复制
+    :nmap <F4> <ESC>:%y<CR>
+    "数字递增
+    :nmap <F8> <ESC>:call ShengNumber()<CR> 
+    "在一对括号外面弄成对的括号
+    ":inoremap <F8> <ESC>f(mA%a)<ESC>`Ai(
+    "先在前面输入一个(,然后标记这个括号,再跳到下一个(,再跳到对应的),然后插入),再ESC,再回到标记处
+    :inoremap <F8> (<ESC>mAf(%a)<ESC>`Aa
+    "在插入模式下,把移动到后面的括号里面
+    :inoremap <F9> <ESC>f)a
+    "假设本行含有defun 那么把本行的以g_开头的全局变量以及后面的空格删除
+    :nmap <F10> <ESC>:.,.g/defun/s/g_\w\+\s\+//ge<CR>
+    "字符串引号""成对,inoremap不递归,用imap会有无穷多个"
+    :inoremap " ""<ESC>i
+    :inoremap <F11> (progn<ESC>o)<ESC>==hhxxO
+    "一对括号,上面与下面的在两行,然后对齐,光标在上面的那个括号后面
+    :inoremap <F12> (<ESC>o)<ESC>==hxka
+endif
+"对于后缀名是ans文件,认为是ANSYS文件,采用ANSYS语法着色
+if (b:extfname==?"ans") "如果文件的后缀名是ans
+    colorscheme koehler         "\配色方案
+    set background=dark     "背景颜色
+    set syntax=apdl
+    set foldmethod=marker     
+    :nmap <F4> o<Esc>I!{{{<Esc>
+    :nmap <F5> o<Esc>I!}}}<Esc>
+endif
+"下面的修改折叠标志的方法,当有很多中括号的时候,会产生很多层得折叠,很麻烦
+"if b:extfname==?"nb"  "如果文件的后缀名是nb
+"     "启用标志折叠,这个针对的是mathematica语言
+"     set foldmethod=marker "启用标志折叠
+"     set foldmarker=[,]    "把[和]之间的内容折叠起来
+"endif
+"第二种针对mathematica的折叠的方式,同样是这用标志折叠
+"使用命令":3,7fo"在第3行和第7行行尾创建折叠标志,把第3行到第7行折叠起来
+"光标落在()[]{}<>之一,使用命令"zf%"在行后创建折叠标志,把对应的括号之间的内容折叠起来
+"在C:\Program Files\Vim\vim72\syntax下的mma.vim文件中的set commentstring='(*%s*)'
+"应该为set commentstring=(*%s*),其实最好把这句注释掉或者去掉
+if (b:extfname==?"nb")  "如果文件的后缀名是nb
+    set foldmethod=marker  "启用标志折叠
+    set commentstring=(*%s*) "把标志折叠的标志注释掉的符号,一般取该语言的注释符号
+    set foldmarker={{{,}}} "创建折叠标志,这是系统默认的折叠标志,一般不用修改
+    ":autocmd FileType mma abbr abc2 ABC2 
+    ":autocmd FileType mma abbr DEF2 def2
+    "运行":MC"命令时,在光标后面附加上"Clear["Global`*"];(*Clear all variables*)"
+    "这个命令用于编写mathematica的命令文件
+    :command MC normal!aClear["Global`*"];(*Clear all variables*)
+    "全部选择然后复制
+    :nmap <F4> <ESC>:%y<CR>
+    "用于生产mathematica的注释符号,改进一下
+    :inoremap <F5> (**)<ESC>hi
+    "删除非行首开始的空白,也就是保留代码的缩进
+    "删除的范围从当前光标所在的行到最后一行
+    :nmap <F6> <ESC>:.,$s/\S\+\zs\s\+\ze\S\+//ge<CR>
+    "当输入(的时候,自动成()并且光标移动到中间
+    :inoremap ( ()<ESC>i
+    :inoremap [ []<ESC>i
+    :inoremap { {}<ESC>i
+endif
+"对于后缀名是m文件,认为是MATLAB文件,采用MATLAB语法着色
+if (b:extfname==?"m") "如果文件的后缀名是m
+    "windows系统用的编码似乎是cp936,对于matlab的代码,如果使用utf8编码的话,
+    "在warning函数中的函数,以及目录中的汉字,容易产生乱码,所以使用cp936编码
+    :set encoding=cp936
+    "设置fileencoding与encoding一致,这样就不会存在转化的问题,参见:h fileencoding
+    :map <F3> <ESC>:set fileencoding=cp936<BAR>w<CR><CR>
+    "全部选择然后复制
+    :nmap <F4> <ESC>:%y<CR>
+    "用于生产matlab的注释符号%以及连续60个*号
+    :imap <F5> <ESC>a%<Esc>60a-<ESC>a
+    "当使用Align命令后,有时会出现丑陋的面孔,所以用下面的<F6>映射删除
+    "行首到百分号之间的空格以及百分号与百分号之间的空格,下面必须是<BAR>
+    "而不能是|,末尾也不知道为什么一定要有两个<CR>
+    :nmap <F6> <ESC>:%s/^\s\+\ze%//ge<BAR>%s/%\zs\s\+\ze%//ge<CR><CR>
+endif
+"从网络上抄来的关于fortran的配置办法,但是不知道什么意思
+"let b:extfname = expand("%:e")
+"对f90和for和f的文件的后缀名,采用fortran自由格式,下一行的括号不可少!
+if (b:extfname ==? ("f90"||"for"||"f"))
+    let fortran_free_source=1
+    unlet! fortran_fixed_source
+    :set foldmethod=syntax
+    "允许fortran进行代码折叠
+    :let fortran_fold=1
+    :let fortran_fold_conditionals=1
+    "更精确的语法高亮
+    :let fortran_more_precise=1
+    "去掉红色的tab(固定格式开头的红色的tab很难看)
+    :let fortran_have_tabs=1
+"else
+"    let fortran_fixed_source=1
+"    unlet! fortran_free_source
+endif
+"如果后缀名是frm,则使用visual basic语法高亮
+if (b:extfname ==?("frm"||"bas"))
+    set syntax=vb
+    "全部选择然后复制
+    :nmap <F4> <ESC>:%y<CR>
+    "插入模式下删除byval以及后面的空格,忽略大小写
+    :nmap <F5> <ESC>:.,.call DByvalAndOptional()<CR>
+    "把本行以(或者,开头的,中间是数字或者字母(以字母开头),以)或者,结尾的
+    "中间部分加上"",让它成为字符串,包含jisuanshu
+    :nmap <F6> <ESC>:.,$call TIHUAN()<CR>
+    :command -range=% TH :<line1>,<line2>call TIHUAN()
+    :command -range=% TH2 :<line1>,<line2>call TIHUAN2()
+    :command -range=% TH3 :<line1>,<line2>call TIHUAN3()
+    :command -range=% TH4 :<line1>,<line2>call TIHUAN4()
+    "下面两句功能其实一样,但是第二行不语法高亮,给visual basic添加连接与续行符号
+    :command -range=% XH :<line1>,<line2>call XUHANG()
+    "将单个逗号,换成,"", 这个是变量与变量之间的
+    :nmap <F7> <ESC>:.,.s/,\+/,"",/ge<CR>
+    :nmap <F8> <ESC>:call ShengNumber()<CR> 
+    "当输入(的时候,自动成()并且光标移动到中间
+    :imap ( ()<ESC>i
+    "字符串引号""成对,inoremap不递归,用imap会有无穷多个"
+    :inoremap " ""<ESC>i
+endif
+if (b:extfname==?"pl")  "如果文件的后缀名是pl
+    "当输入(的时候,自动成()并且光标移动到中间
+    :inoremap ( ()<ESC>i
+    :inoremap [ []<ESC>i
+    :inoremap { {}<ESC>i
+    :inoremap " ""<ESC>i
+    :inoremap ' ''<ESC>i
+    :inoremap <F8> use strict;use warnings;use diagnostics;<CR>
+endif
+if (b:extfname==?"dcl")  "如果文件的后缀名是dcl
+    "当输入(的时候,自动成()并且光标移动到中间
+    :inoremap ( ()<ESC>i
+    :inoremap [ []<ESC>i
+    :inoremap { {}<ESC>i
+    "全部选择然后复制
+    :nmap <F4> <ESC>:%y<CR>
+    "用于生产/**/的注释符号,改进一下
+    :inoremap <F5> (**)<ESC>hi
+endif
+if (b:extfname==?"cpp") 
+    "objectarx 插入_T("")
+    :inoremap <F5> _T("")<ESC>hi
+endif
+if (b:extfname==?"py")  "如果是python文件
+    "当输入(的时候,自动成()并且光标移动到中间
+    :inoremap ( ()<ESC>i
+    :inoremap [ []<ESC>i
+    :inoremap { {}<ESC>i
+    :inoremap " ""<ESC>i
+    :inoremap ' ''<ESC>i
+endif
+if (b:extfname==?"tex")  "如果是LaTeX文件
+    "设置显示编码为utf-8
+    :set enc=utf-8
+    "当输入(的时候,自动成()并且光标移动到中间
+    :inoremap ( ()<ESC>i
+    :inoremap [ []<ESC>i
+    :inoremap { {}<ESC>i
+    :inoremap " ""<ESC>i
+    :inoremap ' ''<ESC>i
+    "先输入一个{,然后E到末尾,然后a输入},然后再回去
+    :inoremap <F8> {<ESC>mAEa}<ESC>`Aa
+    :inoremap <F9> {<ESC>mBA}<ESC>`Ba
+endif
+endfunction "函数定义结束
+
+
+"对于不同的后缀名的文件分别调用上面的函数
+:autocmd BufNewFile,BufRead *.tcl call MyDifferentTypeFun()
+":autocmd BufNewFile,BufRead *.txt call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.lsp call MyDifferentTypeFun()
+"非要我把下面这句加上才能语法高亮,太无耻了! 
+:autocmd BufNewFile,BufRead *.lsp syntax on
+:autocmd BufNewFile,BufRead *.lsp set ignorecase
+":autocmd BufWinEnter *.lsp call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.lsp set foldmethod=manual
+:autocmd BufNewFile,BufRead *.ans call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.nb call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.nb syntax on
+:autocmd BufNewFile,BufRead *.m call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.m syntax on
+:autocmd BufNewFile,BufRead *.f90 call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.for call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.f call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.frm call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.bas call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.pl call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.pl syntax on
+:autocmd BufNewFile,BufRead *.dcl call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.cpp call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.cpp syntax on
+:autocmd BufNewFile,BufRead *.py call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.py syntax on
+:autocmd BufNewFile,BufRead *.tex call MyDifferentTypeFun()
+:autocmd BufNewFile,BufRead *.tex syntax on
+":autocmd BufNewFile,BufRead *.tex set enc=utf-8
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"自定义函数,用来连接visual basic的续行符号
+"调用:5,8call XUHANG()
+function! XUHANG() range
+    let a1=(a:firstline)
+    let a2=(a:lastline)
+	:exe a1.",".a2.'s/\s*$/ \& _/gec'
+endfunction
+"把以(或者,开头的,  以)或者.结尾的  ,中间非,()的,加上引号,用来写vb的计算书
+function! TIHUAN() range
+    let a1=(a:firstline)
+    let a2=(a:lastline)
+    ":exe a1 . "," . a2 . 's/^[^(]\{-}([^(]\{-}\((\|,\)\zs\([^,()"]*\)\ze\(,\|)\)/"\2"/gec'
+    :exe a1 . "," . a2 . 'g/jisuanshu2\=(/s/\((\|,\)\zs\([^,()"]\+\)\ze\(,\|)\)/"\2"/gec'
+    "把中文后的那一个的""去掉
+    :exe a1 . "," . a2 . 'g/jisuanshu2\=(/s/[^\x00-\xff][^,]*,\zs"\([^,()"]\+\)"\ze/\1/gec'
+    "\x00到\xff是ASCII,[^\x00-\xff] 差不多就是中文了,把计算书前面的逗号换成两个逗号
+    :exe a1 . "," . a2 . 'g/jisuanshu2\=(/s/,\+\ze[^\x00-\xff]/,,/gec'
+    "这个变成自动转换
+    :exe a1 . "," . a2 . 'g/jisuanshu2\=(/s/,\zs\ze,/""/gec'
+endfunction
+function! TIHUAN2() range
+    let a1=(a:firstline)
+    let a2=(a:lastline)
+    "先去掉所有的 " 符号
+    :exe a1 . "," . a2 . 'g/jisuanshu2\=(/s/"//ge'
+    ":exe a1 . "," . a2 . 's/^[^(]\{-}([^(]\{-}\((\|,\)\zs\([^,()"]*\)\ze\(,\|)\)/"\2"/gec'
+    "把(, 与),之间加""
+    :exe a1 . "," . a2 . 'g/jisuanshu2\=(/s/\((\|,\)\zs\([^,()"]\+\)\ze\(,\|)\)/"\2"/ge'
+    "把中文后的那一个的""去掉
+    :exe a1 . "," . a2 . 'g/jisuanshu2\=(/s/[^\x00-\xff][^,]*,\zs"\([^,()"]\+\)"\ze/\1/ge'
+    "把等号=后面的哪一个""去掉
+    :exe a1 . "," . a2 . 'g/jisuanshu2\=(/s/=",\zs"\([^,()"]\+\)"\ze/\1/ge'
+    "\x00到\xff是ASCII,[^\x00-\xff] 差不多就是中文了,把计算书前面的逗号换成两个逗号
+    :exe a1 . "," . a2 . 'g/jisuanshu2\=(/s/,\+\ze"\=[^\x00-\xff]/,,/ge'
+    "两个连续的逗号之间加上""
+    :exe a1 . "," . a2 . 'g/jisuanshu2\=(/s/,\zs\ze,/""/ge'
+endfunction
+function! TIHUAN3() range
+    let a1=(a:firstline)
+    let a2=(a:lastline)
+    "先去掉所有的 " 符号
+    :exe a1 . "," . a2 . 'g/jisuanshu\d\=(/s/"//ge'
+    :exe a1 . "," . a2 . 'g/\(jisuanshu\d\=(\).*\([^\x00-\xff]\+\)/s/^[^(]*(\zs\([^,"]\+\)\ze,/"\1"/ge'
+    :exe a1 . "," . a2 . 'g/\(jisuanshu\d\=(\).*\([^\x00-\xff]\+\)/s/,\zs\([^,"]\+\)\ze,/"\1"/ge'
+    :exe a1 . "," . a2 . 'g/\(jisuanshu\d\=(\).*\([^\x00-\xff]\+\)/s/,\zs\([^,"]\+\)\ze)[^)]*$/"\1"/ge'
+    :exe a1 . "," . a2 . 'g/\(jisuanshu\d\=(\).*\([^\x00-\xff]\+\)/s/^[^(]*(\zs\([^,"]\+\)\ze)[^)]*$/"\1"/ge'
+endfunction
+function! TIHUAN4() range
+    let a1=(a:firstline)
+    let a2=(a:lastline)
+    "先去掉所有的 " 符号
+    "变量通常由字母数字组成,把变量与变量之间的运算符号转化成  ,"运算符号", 方便传递变量
+    ":exe a1 . "," . a2 . 's/\w\zs\([^0-9a-zA-Z",)]\+\)\ze[^")]\+$/,"\1",/gec'
+    :exe a1 . "," . a2 . 's/\w\zs\([^",.0-9a-zA-Z]\{-1,3}\)\ze\w/,"\1",/gec'
+    :exe a1 . "," . a2 . 's/\*/×/ge'
+endfunction
+function! DByvalAndOptional() range 
+    let a1=(a:firstline)
+    let a2=(a:lastline)
+    :exe a1 . "," . a2 . 's/byval\s*//gei'
+    :exe a1 . "," . a2 . 's/optional\s*//gei'
+    :exe a1 . "," . a2 . 's/=0\s*//gei'
+    :exe a1 . "," . a2 . 's/^function\s*/=/gei'
+endfunction
+"复制上一行的代码,然后代码的数字大1
+function! ShengNumber() range 
+    let a1=(a:firstline)
+    let a2=(a:lastline)
+    "先复制,然后再替换加one
+    norm yyp
+    :exe "." . "," . "." . 's/\d\+/\=submatch(0)+1/ge'
+endfunction
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""自定义命令区域
+"把":g/^\s*$/d"这个命令换成":DBL"这个容易被(Delete Blank Lines)
+"记住的命令,这个命令的作用是删除文档中所有空白行
+":command -nargs=0 DBL g/^\s*$/d
+:command -range=% DBL :<line1>,<line2>g/^\s*$/d
+
+"把:%s/^\(.*\)\(\n\1\)\+$/\1/这个命令换成:DDL这个容易被记住的命令
+"DDL是Delete Duplicate Lines
+"这个命令的作用是相邻的重复行只保留一个,其余的全部删除
+:command -range=% DDL :<line1>,<line2>s/^\(.*\)\(\n\1\)\+$/\1/
+"把多个连续的空行压缩成一个空行,Compress Blank Line (CBL)
+":s/^\s\+$//e       "先删除由空白构成的空行的里面的空白,e表示有错误不提示
+":s/\n\{3,}/\r\r/e  "再把多个空行压缩成一个空行,e表示有错误不提示
+:command -range=% CBL :<line1>,<line2>s/^\s\+$//ge<BAR><line1>,<line2>s/\n\{3,}/\r\r/ge
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""插件设置区域
+"minibufexpl实现类似于傲游的多标签,不过此处是多buffer
+"http://www.vim.org/scripts/script.php?script_id=159
+let g:miniBufExplMapWindowNavVim=1
+let g:miniBufExplMapWindowNavArrows=1
+let g:miniBufExplMapCTabSwitchBufs=1
+let g:miniBufExplModSelTarget=1
+
+"http://www.vim.org/scripts/script.php?script_id=294
+"如何安装:windows下,解压vim Align.vba.gz,用Vim打开Align.vba
+"输入以下两条命令 :so % 和 :q
+"下面的这个命令是为了使用Align.vim插件时,解决中文对齐的问题
+"具体可以:help align-strlen,不过需要在安装Align.vim这个后才能查看
+let g:Align_xstrlen=3
+"对齐符号前面有1个空格,而后面没有空格
+"下面的W=表示保留注释符号的左边的语句的左边空白部分
+autocmd BufReadPost *.m silent! AlignCtrl W=p1P0  "读取matlab的.m文件时自动执行AlignCtrl命令
+autocmd BufReadPost *.nb silent! AlignCtrl W=p1P0 "读取mathematica的.nb文件时执行AlignCtrl命令
+
+"project-1.4.1.tar.gz http://www.vim.org/scripts/script.php?script_id=69
+":let loaded_project = 1
+
+"neocomplcache : Ultimate auto completion system for Vim
+"http://www.vim.org/scripts/script.php?script_id=2620
+let g:neocomplcache_enable_at_startup=1
+
+"YankRing的设置
+"http://www.vim.org/scripts/script.php?script_id=1234
+let g:yankring_max_history=0   "yankring里面只有5个东西
+"Disables the yankring
+let g:yankring_enabled = 0  
+
+
+"Autohotkey设置
+au BufNewFile,BufRead *.ahk setf autohotkey 
+
+
+
+let g:paredit_mode = 0 "垃圾难用的括号模式不使用!
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""映射设置
+"windows下ctrl+A是全选的意思,取消这个映射,
+"使得ctrl+A能够在normal状态下增加数字的大小(当鼠标处在数字上时)
+:nunmap <C-A>
+"使用ctrl+A(X)增加(减小)数字时,0开头的数字认为是十进制,而不是八进制等
+:set nrformats-=octal
+
+"插入模式下按CTRL+K键把刚输入的单词转化大小写
+:inoremap <C-K> <ESC>bg~wea
+
+"代码转化成html时,保留折叠部分,似乎只有vim7.3才有效果
+let html_dynamic_folds=1
+
+"重新映射{键,使得当按{键的时候,光标所在的行能够到达屏幕的中间
+:nnoremap } }zz
+"重新映射{键,使得当按{键的时候,光标所在的行能够到达屏幕的中间
+:nnoremap { {zz
+"重新映射n键,使得当按n键的时候,光标所在的行能够到达屏幕的中间
+:nnoremap n nzz
+"重新映射N键,使得当按N键的时候,光标所在的行能够到达屏幕的中间
+:nnoremap N Nzz
+"重新映射G键,使得当按G键的时候,能够到达非空白行的下面,而不是到达最后一行
+:nnoremap G G{}0
+"重新映射Y键,使得与D与C一样的功能
+:nnoremap Y y$
+
+"删除成对的括号,先标记一个括号,然后跳到对应的括号上,再回去删除标记的括号
+"nmap <F7> ma%x`ax
+"TrueTable用的,删除所有空格以及复制所有
+function! MyTrueTable()
+    "删除所有的空格
+    :%s/\s\+//ge
+    "复制所有内容
+    :%y
+endfunction
+"noremap <F8> :call MyTrueTable()<CR><CR>
+
+
+"下面两句是造地震波时用的,不用了就可以注释掉了
+":nmap <F5> <Esc>0yt,<Esc>
+":nmap <F6> <Esc>0f,ld$<Esc>j
+""Disables the yankring
+"let g:yankring_enabled = 0  
+
+"映射产生列递增的数字
+":nmap <F8> <Esc>yyp<C-A>
+
+"由于上面的set fenc=cp936命令不知道为什么不起作用,
+"所以写一个保存函数,函数在保存的时候,先把set fenc=cp936命令执行
+"function!MySaveFunction()
+"    if (has("win32")||has("win64"))
+"        set fenc=cp936
+"    end
+"    update
+"endfunction
+"" Use CTRL-S for saving, also in Insert mode
+"if (has("win32")||has("win64"))
+"    noremap  <F9>      :call MySaveFunction()<CR>
+"    vnoremap <F9>      <C-C>:call MySaveFunction()<CR>
+"    inoremap <F9>      <C-O>:call MySaveFunction()<CR>
+"end
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"这段函数一定要放在文件的最后面
+" LastModified: 2019 十一月 29 13:11:30
+"http://www.cnblogs.com/soli/archive/2007/09/06/883734.html
+autocmd BufWritePre,FileWritePre [._]vimrc   ks|call LastModified()|'s
+""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""
+" functions
+function! CHANGE_CURR_DIR() 
+    let _dir = expand("%:p:h") 
+    exec "cd " . _dir 
+    unlet _dir 
+endfunction 
+
+function! LastModified()
+    let l = line("$")
+    exe "1," . l . "s/[L]astModified: .*/LastModified:" .
+        \ strftime(" %Y %b %d %X")
+endfunction
